@@ -1,5 +1,3 @@
-// server/server.js
-
 console.log('🔥 RUNNING SERVER.JS FILE:', __filename);
 
 const express = require('express');
@@ -15,22 +13,17 @@ const Log = require('./models/Log');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS + JSON
 app.use(cors());
 app.use(express.json());
 
-// MongoDB bağlantısı
 connectDB();
 
-// Multer: upload klasörü
 const upload = multer({ dest: 'uploads/' });
 
-// Sağlık testi
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'AI Log Analyzer backend is running 🚀' });
 });
 
-// 1 satırı parse eden yardımcı fonksiyon
 function parseLogLine(line) {
   // Example: 2025-11-29 22:10:00 [ERROR] Database connection failed
   const regex = /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[(.*?)\] (.*)$/;
@@ -53,7 +46,6 @@ function parseLogLine(line) {
   };
 }
 
-// 🔥 LOG UPLOAD – POST /api/logs/upload
 app.post('/api/logs/upload', upload.single('logfile'), async (req, res) => {
   console.log('📥 /api/logs/upload CALLED');
 
@@ -117,7 +109,6 @@ app.post('/api/logs/upload', upload.single('logfile'), async (req, res) => {
   }
 });
 
-// 📊 STATS ENDPOINT – GET /api/stats
 app.get('/api/stats', async (req, res) => {
   try {
     const total = await Log.countDocuments();
@@ -152,7 +143,6 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// 🔍 Son 50 log – GET /api/logs-all
 app.get('/api/logs-all', async (req, res) => {
   try {
     const logs = await Log.find().sort({ createdAt: -1 }).limit(50);
@@ -165,7 +155,6 @@ app.get('/api/logs-all', async (req, res) => {
   }
 });
 
-// 🤖 Basit kural tabanlı AI açıklama fonksiyonu (Türkçe)
 function generateErrorExplanation(message) {
   const msg = (message || '').toLowerCase();
 
@@ -216,7 +205,6 @@ function generateErrorExplanation(message) {
   );
 }
 
-// 🤖 AI ERROR EXPLAIN ENDPOINT – GET /api/logs/last-error-explain
 app.get('/api/logs/last-error-explain', async (req, res) => {
   try {
     const lastError = await Log.findOne({ level: 'ERROR' })
@@ -249,13 +237,12 @@ app.get('/api/logs/last-error-explain', async (req, res) => {
   }
 });
 
-// 404 fallback
 app.use((req, res) => {
   console.log('⚠️ Unmatched request:', req.method, req.url);
   res.status(404).send('404 - Route not found');
 });
 
-// Server start
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
+
