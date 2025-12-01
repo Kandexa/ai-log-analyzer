@@ -272,7 +272,6 @@
             `WARNING ${data.counts.warning}, ` +
             `ERROR ${data.counts.error}`;
 
-          // Upload sonrası stats, logs ve AI insight yenile
           loadStats();
           loadLatestLogs();
           loadErrorInsight();
@@ -296,7 +295,6 @@
         loadErrorInsight();
       });
 
-    // Sayfa açılır açılmaz yükle
     window.addEventListener('load', () => {
       loadStats();
       loadLatestLogs();
@@ -305,4 +303,5 @@
   </script>
 </body>
 </html>
+
 
